@@ -1,6 +1,15 @@
 # HacknFlat
 
-This is an experiment to setup notifications for your search on immoscout24. The script works only partly, so if you look for a good project to setup notifications, please head over to the established python-project [flathunters](https://github.com/flathunters/flathunter/). 
+This is a private experiment (!!!means dirty code without the usual checks, use on your own risk!!!) to setup notifications for your search on immoscout24. The script works only partly, so if you look for a good project to setup notifications, please head over to the established python-project [flathunters](https://github.com/flathunters/flathunter/). 
+
+## Config
+
+Open "immoalert.php" and fill the config at the top of the script: 
+
+* ImmWebUrl: add the search page from immoscout24 here. Parameters should be urlencoded. 
+* alert_mails: Add one or many urls separated with comma. 
+
+Because this script is super quick and dirty, I used xampp on windows to develop. You have to configure mails in your local server to get notifications.
 
 ## How it works
 
