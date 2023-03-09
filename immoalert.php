@@ -7,11 +7,13 @@ use HeadlessChromium\Cookies\Cookie;
 
 # configuration
 $config = [
-	'immoWebUrl' 		=> 'https://www.immobilienscout24.de/Suche/radius/wohnung-mieten?centerofsearchaddress%3DBerlin%253B%253BBerlin%2520Hauptbahnhof%253B%253B%253B%26numberofrooms%3D2.0-%26price%3D-1500.0%26livingspace%3D60.0-%26exclusioncriteria%3Dswapflat%26pricetype%3Drentpermonth%26geocoordinates%3D52.524742%253B13.3695626%253B7.0%26enteredFrom%3Dresult_list%26viewMode%3DMAP%23%2F%3FboundingBox%3D52.45439%252C13.177302%252C52.594969%252C13.561823',
-	'alert_mails'		=> 'mail addresses separated by comma',
+	'immoWebUrl' 		=> 'https://www.immobilienscout24.de/Suche/radius/wohnung-mieten?centerofsearchaddress=Berlin%3B%3BBerlin%20Hauptbahnhof%20(Tief)%3B%3B%3B&numberofrooms=2.0-&price=0.0-1500.0&livingspace=60.0-&exclusioncriteria=swapflat&pricetype=calculatedtotalrent&geocoordinates=52.5246361%3B13.369861%3B7.0&enteredFrom=result_list&viewMode=MAP#/?boundingBox=52.430668%2C12.98534%2C52.618246%2C13.754382',
+	'alert_mails'		=> 'your email here'
 ];
-$config['immoJsonUrl']	= str_replace('/Suche/', '/Suche/controller/mapResults.go?searchUrl=/Suche/', $config['immoWebUrl']);
 
+$urlparts 				= explode("?", $config['immoWebUrl']);
+$jsonurl 				= str_replace('/Suche/', '/Suche/controller/mapResults.go?searchUrl=/Suche/', $urlparts[0]);
+$config['immoJsonUrl']	= $jsonurl . '?' . urlencode($urlparts[1]);
 
 # check if a fresh cookie has been posted from webform
 $cookievalue = isset($_POST['cookievalue']) ? $_POST['cookievalue'] : false;
@@ -52,7 +54,6 @@ $browser = $browserFactory->createBrowser([
 	'customFlags' => ['--incognito']
 ]);
 
-
 try {
 
     # create a new page
@@ -77,14 +78,6 @@ try {
 
     # navigate to the page, it returns JSON data if not blocked by captcha page
 	$page->navigate($config['immoJsonUrl'])->waitForNavigation();
-
-	# store cookie locally for next session
-	$cookies = $page->getCookies();
-	$cookieReese = $cookies->findOneBy('name', 'reese84');
-	if ($cookieReese)
-	{
-		$res = storeCookie($cookieReese->getValue());
-	}
 
 	$response = $page->getHtml();
 	$result = trim(strip_tags($response));
@@ -118,14 +111,21 @@ if($resultlist)
 
 	storeLocalData($newresults);
 
+	# just to check:
+	echo '<pre>';
+	print_r($alertids);
+
+	# send alerts
 	if(!empty($alertids))
 	{
 		sendAlert($alertids, $config['alert_mails']);
 	}
 }
 
+echo date("h:i:s");
+
 # refresh page in ...
-$sec = random_int(50, 80);
+$sec = random_int(60, 80);
 header("refresh:" . $sec . ";");
 
 function showFormForToken()
@@ -158,44 +158,8 @@ function showFormForToken()
 					    <br>
 					</body>
 					</html>';
-	echo date("h:i:s");
+	echo date("h:i:s");					
 	echo $htmlform;
-	die();	
-}
-
-function addLogEntry()
-{
-	$localfile 		= getcwd() . DIRECTORY_SEPARATOR . "immologs.json";
-
-	$logdata 	= [];
-	if(file_exists($localfile))
-	{
-		$logdata = file_get_contents($localfile);
-		$logdata = json_decode($logdata,true);
-	}
-	date_default_timezone_set('Europe/Berlin');
-	$logdata[] 		= date("Y-m-d H:i:s");
-	$logdata		= json_encode($logdata);
-	file_put_contents($localfile, $logdata);
-}
-
-function getLog()
-{
-	$localfile 		= getcwd() . DIRECTORY_SEPARATOR . "immologs.json";
-
-	if(file_exists($localfile))
-	{
-		$localresults = file_get_contents($localfile);
-		$localresults = json_decode($localresults,true);
-		return $localresults;
-	}
-	return [];
-}
-
-function clearLog()
-{
-	$localfile 		= getcwd() . DIRECTORY_SEPARATOR . "immologs.json";
-	unlink($localfile);
 }
 
 function getLocalData()
@@ -220,36 +184,33 @@ function storeLocalData($data)
 
 function getCookie()
 {
-	$localfilefresh = getcwd() . DIRECTORY_SEPARATOR . "immoalertcookiefresh.json";
-	$localfile 		= getcwd() . DIRECTORY_SEPARATOR . "immoalertcookie.json";
-	if(file_exists($localfilefresh))
+	$localfile 		= getcwd() . DIRECTORY_SEPARATOR . "reese84.txt";
+	$files 			= glob("reese8*.txt");
+
+	if(!empty($files))
 	{
-		$localresults = file_get_contents($localfilefresh);
+		arsort($files);
+		$localresults = file_get_contents($files[0]);
+
+		if(count($files) > 1)
+		{
+			$localresults = file_get_contents($files[1]);
+		}
+
 		$localresults = json_decode($localresults,true);
-		unlink($localfilefresh);
-		return $localresults['value'];
 	}
-	elseif(file_exists($localfile))
+
+	foreach ( $files as $filename) 
 	{
-		$localresults = file_get_contents($localfile);
-		$localresults = json_decode($localresults,true);
-		return $localresults['value'];
-	}	
+		unlink($filename);
+	}
+
+	if(isset($localresults[0]['value']))
+	{
+		return $localresults[0]['value'];
+	}
+
 	return false;
-}
-
-function storeCookie($value)
-{
-	$localfile 		= getcwd() . DIRECTORY_SEPARATOR . "immoalertcookie.json";
-	$localdata		= json_encode(['value' => $value]);
-	file_put_contents($localfile, $localdata);	
-}
-
-function storeFreshCookie($value)
-{
-	$localfile 		= getcwd() . DIRECTORY_SEPARATOR . "immoalertcookiefresh.json";
-	$localdata		= json_encode(['value' => $value]);
-	file_put_contents($localfile, $localdata);	
 }
 
 function sendAlert($ids, $addresses)
