@@ -1,0 +1,15 @@
+[
+  {
+    "domain": ".immobilienscout24.de",
+    "expirationDate": 1680959303.65114,
+    "hostOnly": false,
+    "httpOnly": false,
+    "name": "reese84",
+    "path": "/",
+    "sameSite": "lax",
+    "secure": false,
+    "session": false,
+    "storeId": "0",
+    "value": "3:2d6Ogz71JctK2b2Af6BKLA==:+cqojx4O8sfZ4qL17uScsUICcxv2BKhv1ogz91yEilSGJjHUBp/JJf16ZDhmNQb11zRyNnNq4b0vyg6bt42LcLbv/F19Ce22/wcAi9I1I4ZZY/OCQI4WH3dDuj9Z+8fjPFI3Z8non4KRV4dKxbuuwk8u5i557TeXbsSdx53XxU/6AeUT7GLSY19Z8rnouUwTqb0jEAIvvbWjhhEZc7kLoYn1dPYiw+NrjjlyeMSvuH7KDi+VoJrC3XKTIJPjjdUkX71pbxVPCoObRJyqyC7dOm2cRcickLG5lNlIv/9tRRVhmzz3TGDAsBEI5KnqN9eW9o6nOXbpEybjxQ8y4S2WCGnb+0s+IoueV3RnBnjK6uKcWlMJ1q3DeLzqUNSoTuEz+K80PkFRcxMF7LS3Wrj0E7fzPl9MrDu6tPEk5q6H4j8mV0+kxMRuI7NIbRNAxGbJFriXjvuDg1qLGinZgE7cBpFviOUicl769cizX8T1Qb5GnaKUhLNcLHkaOq/UvDQ7o8w8IYjtgyQMiZCk90L2xQ==:xr0QCHSmAE0gB5PP2E5FHcOEz16PAQZpWU2VGV4Y9Hk="
+  }
+]

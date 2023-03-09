@@ -59,4 +59,12 @@ The (simple) steps in detail:
 
 If you are done, simply open the file "immoalert.php" in your browser, e.g. "https://localhost/HacknFlat/immoalert.php". I use firefox for this, chrome only does the cookie download in my setup.
 
+## Thank you
+
+The browser extension is based on https://github.com/ktty1220/export-cookie-for-puppeteer. 
+
+Thank you to flathunters for the discussion: https://github.com/flathunters/flathunter/issues/302#issuecomment-1458098774
+
+## Finally
+
 Good luck for your search!
